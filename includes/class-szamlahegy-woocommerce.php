@@ -6,10 +6,10 @@
  * A class definition that includes attributes and functions used across both the
  * public-facing side of the site and the admin area.
  *
- * @link       http://example.com
+ * @link       https://szamlahegy.hu
  * @since      1.0.0
  *
- * @package    Plugin_Name
+ * @package    Szamlahegy_Woocommerce
  * @subpackage Plugin_Name/includes
  */
 
@@ -23,9 +23,9 @@
  * version of the plugin.
  *
  * @since      1.0.0
- * @package    Plugin_Name
+ * @package    Szamlahegy_Woocommerce
  * @subpackage Plugin_Name/includes
- * @author     Your Name <email@example.com>
+ * @author     Számlahegy Kft. <info@szamlahegy.hu>
  */
 class Szamlahegy_Woocommerce {
 

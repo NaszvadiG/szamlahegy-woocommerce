@@ -3,11 +3,11 @@
 /**
  * The admin-specific functionality of the plugin.
  *
- * @link       http://example.com
+ * @link       https://szamlahegy.hu
  * @since      1.0.0
  *
- * @package    Plugin_Name
- * @subpackage Plugin_Name/admin
+ * @package    Szamlahegy_Woocommerce
+ * @subpackage Szamlahegy_Woocommerce/admin
  */
 
 /**
@@ -16,9 +16,9 @@
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the admin-specific stylesheet and JavaScript.
  *
- * @package    Plugin_Name
- * @subpackage Plugin_Name/admin
- * @author     Your Name <email@example.com>
+ * @package    Szamlahegy_Woocommerce
+ * @subpackage Szamlahegy_Woocommerce/admin
+ * @author     Számlahegy Kft. <info@szamlahegy.hu>
  */
 class Szamlahegy_Woocommerce_Admin {
 

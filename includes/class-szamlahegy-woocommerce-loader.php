@@ -3,7 +3,7 @@
 /**
  * Register all actions and filters for the plugin
  *
- * @link       http://example.com
+ * @link       https://szamlahegy.hu
  * @since      1.0.0
  *
  * @package    Szamlahegy_Woocommerce
@@ -19,7 +19,7 @@
  *
  * @package    Szamlahegy_Woocommerce
  * @subpackage Szamlahegy_Woocommerce/includes
- * @author     Your Name <email@example.com>
+ * @author     Számlahegy Kft. <info@szamlahegy.hu>
  */
 class Szamlahegy_Woocommerce_Loader {
 

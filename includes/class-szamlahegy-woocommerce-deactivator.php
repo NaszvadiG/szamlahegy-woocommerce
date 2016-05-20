@@ -3,10 +3,10 @@
 /**
  * Fired during plugin deactivation
  *
- * @link       http://example.com
+ * @link       https://szamlahegy.hu
  * @since      1.0.0
  *
- * @package    Plugin_Name
+ * @package    Szamlahegy_Woocommerce
  * @subpackage Plugin_Name/includes
  */
 
@@ -16,9 +16,9 @@
  * This class defines all code necessary to run during the plugin's deactivation.
  *
  * @since      1.0.0
- * @package    Plugin_Name
+ * @package    Szamlahegy_Woocommerce
  * @subpackage Plugin_Name/includes
- * @author     Your Name <email@example.com>
+ * @author     Számlahegy Kft. <info@szamlahegy.hu>
  */
 class Szamlahegy_Woocommerce_Deactivator {
 

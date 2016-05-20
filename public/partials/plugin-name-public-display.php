@@ -5,11 +5,11 @@
  *
  * This file is used to markup the public-facing aspects of the plugin.
  *
- * @link       http://example.com
+ * @link       https://szamlahegy.hu
  * @since      1.0.0
  *
- * @package    Plugin_Name
- * @subpackage Plugin_Name/public/partials
+ * @package    Szamlahegy_Woocommerce
+ * @subpackage Szamlahegy_Woocommerce/public/partials
  */
 ?>
 

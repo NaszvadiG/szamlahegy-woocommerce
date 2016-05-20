@@ -1,22 +1,17 @@
 <?php
 
 /**
- * The plugin bootstrap file
- *
- * This file is read by WordPress to generate the plugin information in the plugin
- * admin area. This file also includes all of the dependencies used by the plugin,
- * registers the activation and deactivation functions, and defines a function
- * that starts the plugin.
+ * Számlahegy Woocommerce plugin
  *
  * @link              https://szamlahegy.hu
- * @since             0.0.1
+ * @since             1.0.0
  * @package           Szamlahegy_Woocommerce
  *
  * @wordpress-plugin
- * Plugin Name: A1 - Számlahegy Woocommerce
+ * Plugin Name: Számlahegy Woocommerce
  * Plugin URI:  https://szamlahegy.hu
  * Description: Woocommerce összekapcsolása Számlaheggyel
- * Version:     0.1
+ * Version:     1.0
  * Author:      Számlahegy Kft
  * Author URI:  https://github.com/Szamlahegy
  */
