@@ -1,4 +1,0 @@
-api
-===
-
-Számlahegy php API
