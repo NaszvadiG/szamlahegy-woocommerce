@@ -1,0 +1,9 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+
+#szamlahegy_order_option .inside a {
+  margin: 10px 0px;
+  width: 150px;
+}
