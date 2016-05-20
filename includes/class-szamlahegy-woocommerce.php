@@ -119,7 +119,7 @@ class Szamlahegy_Woocommerce {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-szamlahegy-woocommerce-public.php';
 
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'szamlahegy-api/api.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'api/api.php';
 
 		$this->loader = new Szamlahegy_Woocommerce_Loader();
 
