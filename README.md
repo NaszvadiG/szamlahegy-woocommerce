@@ -8,7 +8,8 @@ A [Számlahegy online számlázó](https://szamlahegy.hu) program plugin-je [Wor
 * Számla PDF megnyitása
 * Számla részleteinek megtekintése a Számlahegy ügyfél felületén
 * Összes számla megjelenítése a Számla lista képernyőn
-* Elektronikus számla küldése e-mail-ben
+* Hiteles elektronikus számla készítése
+* [e-számla](https://szamlahegy.hu) küldése e-mail-ben
 * Nyomtatott számla készítése
 * Díjbekérő készítése
 * Teszt üzemmód, teszt számlák készítése
