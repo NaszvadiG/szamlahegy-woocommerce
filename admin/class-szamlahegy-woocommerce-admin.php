@@ -117,6 +117,13 @@ class Szamlahegy_Woocommerce_Admin {
 		);
 
 		$settings[] = array(
+			'title'    => __( 'Számla automatikus létrehozása', 'szamlahegy-wc' ),
+			'id'       => 'szamlahegy_wc_generate_auto',
+			'type'     => 'checkbox',
+			'desc'     => __( 'Ha a megrendelés <i>"teljesítve"</i> státuszba kerül, a számla automatikusan létrejön a megrendelés adatai alapján.', 'szamlahegy-wc' ),
+		);
+
+		$settings[] = array(
 			'title'    => __( 'Teszt üzemmód', 'szamlahegy-wc' ),
 			'id'       => 'szamlahegy_wc_test',
 			'type'     => 'checkbox',
@@ -168,93 +175,22 @@ class Szamlahegy_Woocommerce_Admin {
 		include plugin_dir_path(  __FILE__ )  . 'partials/szamlahegy-woocommerce-admin-metabox.php';
 	}
 
-	public function create_invoice() {
+	public function create_invoice_ajax() {
 		check_ajax_referer( 'wc_create_invoice', 'nonce' );
-
-		$orderId = $_POST['order'];
-		$order = WC_Order_Factory::get_order($orderId);
-		$order_items = $order->get_items();
-
-		if ($order->order_total == 0) wp_send_json_error( array('error_text' => __( 'A számla végösszege nulla, azért nem készítem el.', 'szamlahegy-wc' )));
-
-		$date_now = date('Y-m-d');
-		$invoice = new Invoice();
-
-		$invoice->customer_name = $order->billing_company ? $order->billing_company : $order->billing_first_name . ' ' . $order->billing_last_name;
-		// $invoice->customer_detail =
-		$invoice->customer_city = $order->billing_city;
-		$invoice->customer_address = $order->billing_address_1;
-		if ($order->billing_address_2) $invoice->customer_address .= ' ' . $order->billing_address_2;
-		$invoice->customer_country = $order->billing_country;
-		//$invoice->customer_vatnr = ???
-		$invoice->payment_method = $order->payment_method == 'cod' ? 'C' : 'B';
-		$invoice->payment_date = $date_now;
-		$invoice->perform_date = $date_now;
-		//$invoice->header =
-		//$invoice->footer = get_option('szamlahegy_wc_test');
-		$invoice->customer_zip = $order->billing_postcode;
-
-		if (get_option('szamlahegy_wc_test') == 'yes') {
-			$invoice->kind = 'T';
-			$invoice->signed = false;
-		} elseif ( get_option('szamlahegy_wc_invoice_type') == 'e-szamla' ) {
-			$invoice->kind = 'N';
-			$invoice->signed = true;
-		} else {
-			$invoice->kind = 'N';
-			$invoice->signed = false;
-		}
-
-		$invoice->tag = 'woocommerce';
-		if ($order->is_paid()) $invoice->paid_at = $date_now;
-		$invoice->customer_email = $order->billing_email;
-		$invoice->foreign_id = "wc". $order->get_order_number();
-		$invoice->customer_contact_name = $order->billing_first_name . ' ' . $order->billing_last_name;
-
-		$invoice_items = array();
-		foreach( $order_items as $item ) {
-			$product_id = $item['product_id'];
-			if ($item['variation_id']) $product_id = $item['variation_id'];
-			$product = new WC_Product($product_id);
-
-			$invoice_items[] = array(
-				'productnr' => $product->get_sku() == null ? get_option('szamlahegy_wc_default_productnr') : $product->get_sku(),
-				'name' => $item["name"],
-				'detail' => wc_get_formatted_variation( $product->variation_data, true ),
-				'quantity' => $item["qty"],
-				'quantity_type' => 'db',
-				'price_slab' => round($item["line_total"] / $item["qty"], 2),
-				'tax' => round($item["line_tax"] / $item["line_total"] * 100, 2)
-			);
-		}
-		$invoice->invoice_rows_attributes = $invoice_items;
-
-		$szamlahegyApi = new SzamlahegyApi();
-
-		$api_server = get_option('szamlahegy_wc_server_url');
-		$api_url = $api_server . '/api/v1/invoices';
-
-  	$szamlahegyApi->openHTTPConnection($api_url);
-		$response = $szamlahegyApi->sendNewInvoice($invoice, get_option('szamlahegy_wc_api_key'));
-		$szamlahegyApi->closeHTTPConnection();
-
-    if ($response['error'] === true) {
+		$order_id = $_POST['order'];
+		$response = Szamlahegy_Woocommerce::create_invoice($order_id);
+		
+		if ($response['error'] === true) {
 			wp_send_json_error($response);
-    } else {
-			$result_object = json_decode($response['result'], true);
 
-			$result_object['server_url'] = $api_server;
-			$result_object['invoice_url'] = $api_server . '/user/invoices/' . $result_object['id'];
-			$result_object['pdf_url'] = $api_server . '/user/invoices/download/' . $result_object['guid'] . "?inline=true";
-
-			update_post_meta( $orderId, '_szamlahegy_wc_response', $result_object);
-
+		} else {
+			$order = WC_Order_Factory::get_order($order_id);
 			ob_start();
 			$this->render_meta_box_content($order->post);
 			$response['meta_box'] = ob_get_contents();
 			ob_end_clean();
 
 			wp_send_json_success($response);
-    }
+		}
 	}
 }

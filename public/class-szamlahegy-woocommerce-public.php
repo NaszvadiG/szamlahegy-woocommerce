@@ -100,4 +100,11 @@ class Szamlahegy_Woocommerce_Public {
 
 	}
 
+	public function action_woocommerce_order_status_completed( $order_id ) {
+		if ( Szamlahegy_Woocommerce::is_invoice_generate_auto() ) {
+			if ( !Szamlahegy_Woocommerce::is_invoice_created( $order_id ) ) {
+				Szamlahegy_Woocommerce::create_invoice( $order_id );
+			}
+		}
+	}
 }
