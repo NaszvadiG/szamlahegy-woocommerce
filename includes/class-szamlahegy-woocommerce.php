@@ -156,13 +156,9 @@ class Szamlahegy_Woocommerce {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
-		//add_filter( 'woocommerce_general_settings', array( $this, 'szamlazz_settings' ), 20, 1 );
-		//add_action( 'woocommerce_order_status_completed', array( $this, 'on_order_complete' ) );
-		//add_action( 'woocommerce_order_status_processing', array( $this, 'on_order_processing' ) );
-
 		$this->loader->add_filter( 'woocommerce_general_settings', $plugin_admin, 'szamlahegy_woocommerce_settings');
 		$this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'szamlahegy_woocommerce_add_metabox' );
-		$this->loader->add_action( 'wp_ajax_szamlahegy_wc_create_invoice', $plugin_admin, 'create_invoice' );
+		$this->loader->add_action( 'wp_ajax_szamlahegy_wc_create_invoice', $plugin_admin, 'create_invoice_ajax' );
 	}
 
 	/**
@@ -178,6 +174,7 @@ class Szamlahegy_Woocommerce {
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+		$this->loader->add_action( 'woocommerce_order_status_completed', $plugin_public, 'action_woocommerce_order_status_completed' );
 
 	}
 
@@ -221,4 +218,116 @@ class Szamlahegy_Woocommerce {
 		return $this->version;
 	}
 
+	public static function get_api_key() {
+		return get_option('szamlahegy_wc_api_key');
+	}
+
+	public static function get_default_productnr() {
+		return get_option('szamlahegy_wc_default_productnr');
+	}
+
+	public static function is_test_mode() {
+		return get_option('szamlahegy_wc_test') == 'yes';
+	}
+
+	public static function get_generate_invoice_type() {
+		return get_option('szamlahegy_wc_invoice_type');
+	}
+
+	public static function is_invoice_created($order_id) {
+		if ( Szamlahegy_Woocommerce::get_api_response($order_id) ) return true;
+		return false;
+	}
+
+	public static function get_server_url() {
+		return get_option('szamlahegy_wc_server_url');
+	}
+
+	public static function get_api_response($order_id) {
+		return get_post_meta( $order_id, '_szamlahegy_wc_response', true );
+	}
+
+	public static function is_invoice_generate_auto() {
+		return get_option('szamlahegy_wc_generate_auto') == 'yes';
+	}
+
+	public static function create_invoice($order_id) {
+		$order = WC_Order_Factory::get_order($order_id);
+		if ($order->order_total == 0) return array('error' => true, 'error_text' => __( 'A számla végösszege nulla, azért nem készítem el.', 'szamlahegy-wc' ));
+
+		$order_items = $order->get_items();
+		$date_now = date('Y-m-d');
+		$invoice = new Invoice();
+
+		$invoice->customer_name = $order->billing_company ? $order->billing_company : $order->billing_first_name . ' ' . $order->billing_last_name;
+		// $invoice->customer_detail =
+		$invoice->customer_city = $order->billing_city;
+		$invoice->customer_address = $order->billing_address_1;
+		if ($order->billing_address_2) $invoice->customer_address .= ' ' . $order->billing_address_2;
+		$invoice->customer_country = $order->billing_country;
+		//$invoice->customer_vatnr = ???
+		$invoice->payment_method = $order->payment_method == 'cod' ? 'C' : 'B';
+		$invoice->payment_date = $date_now;
+		$invoice->perform_date = $date_now;
+		//$invoice->header =
+		//$invoice->footer =
+		$invoice->customer_zip = $order->billing_postcode;
+
+		if (Szamlahegy_Woocommerce::is_test_mode()) {
+			$invoice->kind = 'T';
+			$invoice->signed = false;
+		} elseif ( Szamlahegy_Woocommerce::get_generate_invoice_type() == 'e-szamla' ) {
+			$invoice->kind = 'N';
+			$invoice->signed = true;
+		} else {
+			$invoice->kind = 'N';
+			$invoice->signed = false;
+		}
+
+		$invoice->tag = 'woocommerce';
+		if ($order->is_paid()) $invoice->paid_at = $date_now;
+		$invoice->customer_email = $order->billing_email;
+		$invoice->foreign_id = "wc". $order->get_order_number();
+		$invoice->customer_contact_name = $order->billing_first_name . ' ' . $order->billing_last_name;
+
+		$invoice_items = array();
+		foreach( $order_items as $item ) {
+			$product_id = $item['product_id'];
+			if ($item['variation_id']) $product_id = $item['variation_id'];
+			$product = new WC_Product($product_id);
+
+			$invoice_items[] = array(
+				'productnr' => $product->get_sku() == null ? Szamlahegy_Woocommerce::get_default_productnr() : $product->get_sku(),
+				'name' => $item["name"],
+				'detail' => wc_get_formatted_variation( $product->variation_data, true ),
+				'quantity' => $item["qty"],
+				'quantity_type' => 'db',
+				'price_slab' => round($item["line_total"] / $item["qty"], 2),
+				'tax' => round($item["line_tax"] / $item["line_total"] * 100, 2)
+			);
+		}
+		$invoice->invoice_rows_attributes = $invoice_items;
+
+		$szamlahegyApi = new SzamlahegyApi();
+		$api_server = Szamlahegy_Woocommerce::get_server_url();
+		$api_url = $api_server . '/api/v1/invoices';
+
+  	$szamlahegyApi->openHTTPConnection($api_url);
+		$response = $szamlahegyApi->sendNewInvoice($invoice, Szamlahegy_Woocommerce::get_api_key());
+		$szamlahegyApi->closeHTTPConnection();
+
+    if ($response['error'] === true) {
+			return $response;
+    } else {
+			$result_object = json_decode($response['result'], true);
+
+			$result_object['server_url'] = $api_server;
+			$result_object['invoice_url'] = $api_server . '/user/invoices/' . $result_object['id'];
+			$result_object['pdf_url'] = $api_server . '/user/invoices/download/' . $result_object['guid'] . "?inline=true";
+
+			update_post_meta( $order_id, '_szamlahegy_wc_response', $result_object);
+
+			return $response;
+    }
+	}
 }

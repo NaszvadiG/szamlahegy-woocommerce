@@ -13,11 +13,11 @@
  */
 ?>
 <center>
-<?php if (!get_option('szamlahegy_wc_api_key')): ?>
+<?php if (!Szamlahegy_Woocommerce::get_api_key()): ?>
   <p style="text-align: center;"><?php _e('A számlakészítéshez szükséges az API kulcs, amit <a href="/wp-admin/admin.php?page=wc-settings">Woocommerce bállításoknál</a> adhatsz meg!','szamlahegy-wc'); ?></p>
 <?php else: ?>
-  <?php if (get_post_meta( $post->ID, '_szamlahegy_wc_response' )): ?>
-    <?php $invoice = get_post_meta( $post->ID, '_szamlahegy_wc_response', true ); ?>
+  <?php if (Szamlahegy_Woocommerce::is_invoice_created( $post->ID )): ?>
+    <?php $invoice = Szamlahegy_Woocommerce::get_api_response($post->ID); ?>
     <a href="<?php echo $invoice['invoice_url'] ?>" class="button button-info" target="_blank"><?php echo _e('Számla adatok','szamlahegy-wc'); ?></a><br/>
     <a href="<?php echo $invoice['pdf_url'] ?>" class="button button-info" target="_blank"><?php echo _e('Számla megnyitása','szamlahegy-wc'); ?></a><br/>
     <a href="<?php echo $invoice['server_url'] ?>/user/invoices" class="button button-info" target="_blank"><?php echo _e('Számla lista','szamlahegy-wc'); ?></a><br/>
