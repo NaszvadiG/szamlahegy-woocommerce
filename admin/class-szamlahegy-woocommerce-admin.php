@@ -137,7 +137,7 @@ class Szamlahegy_Woocommerce_Admin {
 			'css'      => 'min-width:300px;',
 			'type'     => 'select',
 			'options'     => array(
-				'e-szamla'  => __( 'Elektronuikus számla', 'szamlahegy-wc' ),
+				'e-szamla'  => __( 'Elektronikus számla', 'szamlahegy-wc' ),
 				'nyomtatott' => __( 'Nyomtatott számla', 'szamlahegy-wc' )
 			)
 		);
