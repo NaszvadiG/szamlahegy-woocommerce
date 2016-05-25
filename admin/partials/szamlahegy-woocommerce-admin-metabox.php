@@ -14,7 +14,7 @@
 ?>
 <center>
 <?php if (!Szamlahegy_Woocommerce::get_api_key()): ?>
-  <p style="text-align: center;"><?php _e('A számlakészítéshez szükséges az API kulcs, amit <a href="/wp-admin/admin.php?page=wc-settings">Woocommerce bállításoknál</a> adhatsz meg!','szamlahegy-wc'); ?></p>
+  <p style="text-align: center;"><?php printf(__('A számlakészítéshez szükséges az API kulcs, amit <a href="%s">Woocommerce bállításoknál</a> adhatsz meg!','szamlahegy-wc'), admin_url('admin.php?page=wc-settings') ); ?></p>
 <?php else: ?>
   <?php if (Szamlahegy_Woocommerce::is_invoice_created( $post->ID )): ?>
     <?php $invoice = Szamlahegy_Woocommerce::get_api_response($post->ID); ?>
