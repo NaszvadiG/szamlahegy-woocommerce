@@ -177,9 +177,10 @@ class Szamlahegy_Woocommerce_Admin {
 
 	public function create_invoice_ajax() {
 		check_ajax_referer( 'wc_create_invoice', 'nonce' );
-		$order_id = $_POST['order'];
+		$order_id =  intval($_POST['order']);
+		if ( !$order_id ) wp_send_json_error( array('error' => true, 'error_text' => __( 'Hibás order azonosító!', 'szamlahegy-wc' )));
 		$response = Szamlahegy_Woocommerce::create_invoice($order_id);
-		
+
 		if ($response['error'] === true) {
 			wp_send_json_error($response);
 
