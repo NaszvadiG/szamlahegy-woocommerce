@@ -158,7 +158,9 @@ class Szamlahegy_Woocommerce {
 
 		$this->loader->add_filter( 'woocommerce_general_settings', $plugin_admin, 'szamlahegy_woocommerce_settings');
 		$this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'szamlahegy_woocommerce_add_metabox' );
-		$this->loader->add_action( 'wp_ajax_szamlahegy_wc_create_invoice', $plugin_admin, 'create_invoice_ajax' );
+		$this->loader->add_action( 'wp_ajax_szamlahegy_wc_create_invoice', $plugin_admin, 'create_invoice' );
+
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'szamlahegy_plugin_menu' );
 	}
 
 	/**
@@ -306,13 +308,25 @@ class Szamlahegy_Woocommerce {
 				'tax' => round($item["line_tax"] / $item["line_total"] * 100, 2)
 			);
 		}
+
+		// Shipping
+		if ($order->get_total_shipping() != 0) {
+			$invoice_items[] = array(
+				'productnr' => Szamlahegy_Woocommerce::get_default_productnr(),
+				'name' => __( 'Szállítási díj', 'szamlahegy-wc' ),
+				'quantity' => 1,
+				'quantity_type' => 'db',
+				'price_slab' => round($order->get_total_shipping(), 2),
+				'tax' => round($order->get_shipping_tax() / $order->get_total_shipping() * 100, 2)
+			);
+		}
+
 		$invoice->invoice_rows_attributes = $invoice_items;
 
 		$szamlahegyApi = new SzamlahegyApi();
 		$api_server = Szamlahegy_Woocommerce::get_server_url();
-		$api_url = $api_server . '/api/v1/invoices';
 
-  	$szamlahegyApi->openHTTPConnection($api_url);
+  	$szamlahegyApi->openHTTPConnection('send_invoice', $api_server);
 		$response = $szamlahegyApi->sendNewInvoice($invoice, Szamlahegy_Woocommerce::get_api_key());
 		$szamlahegyApi->closeHTTPConnection();
 
