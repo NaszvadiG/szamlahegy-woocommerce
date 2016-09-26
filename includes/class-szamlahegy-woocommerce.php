@@ -159,8 +159,6 @@ class Szamlahegy_Woocommerce {
 		$this->loader->add_filter( 'woocommerce_general_settings', $plugin_admin, 'szamlahegy_woocommerce_settings');
 		$this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'szamlahegy_woocommerce_add_metabox' );
 		$this->loader->add_action( 'wp_ajax_szamlahegy_wc_create_invoice', $plugin_admin, 'create_invoice' );
-
-		$this->loader->add_action( 'admin_menu', $plugin_admin, 'szamlahegy_plugin_menu' );
 	}
 
 	/**
