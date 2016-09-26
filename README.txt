@@ -58,6 +58,9 @@ Segítségért látogatsd meg a [help.szamlahegy.hu](https://help.szamlahegy.hu)
 4. Sikeres kézi számlakészítés
 
 == Changelog ==
+= 1.1 =
+* Szállítási díj megjelenítése a számlán ha van
+* JSON hibakezelés hibás kommunikáció esetén
 
 = 1.0 =
 * Elkészült a bővítmény.
