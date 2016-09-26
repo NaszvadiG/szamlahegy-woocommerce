@@ -11,7 +11,7 @@
  * Plugin Name: Számlahegy Woocommerce
  * Plugin URI:  https://szamlahegy.hu
  * Description: Woocommerce összekapcsolása Számlaheggyel
- * Version:     1.1.4
+ * Version:     1.1.5
  * Author:      Számlahegy Kft
  * Author URI:  https://github.com/Szamlahegy
  */
