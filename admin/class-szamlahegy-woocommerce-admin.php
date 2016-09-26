@@ -102,7 +102,7 @@ class Szamlahegy_Woocommerce_Admin {
 	 	);
 	}
 
-	public function szamlahegy_woocommerce_settings( $settings ) {
+		public function szamlahegy_woocommerce_settings( $settings ) {
 		$settings[] = array(
 			'type' => 'title',
 			'title' => __( 'Számlahegy.hu beállítások', 'szamlahegy-wc' ),
@@ -175,7 +175,106 @@ class Szamlahegy_Woocommerce_Admin {
 		include plugin_dir_path(  __FILE__ )  . 'partials/szamlahegy-woocommerce-admin-metabox.php';
 	}
 
-	public function create_invoice_ajax() {
+	public function get_product_details($product) {
+		// https://docs.woocommerce.com/wc-apidocs/class-WC_Product.html
+		return array(
+			'id' => $product->get_id(),
+			'permalink' => $product->get_permalink(),
+			'sku' => $product->get_sku(),
+			'stock_quantity' => $product->get_stock_quantity(),
+			'type' => $product->get_type(),
+			'formatted_name' => $product->get_formatted_name(),
+			'downloadable' => $product->is_downloadable(),
+			'virtual' => $product->is_virtual(),
+			'needs_shipping' => $product->needs_shipping(),
+			'sold_individually' => $product->is_sold_individually(),
+			'taxable' => $product->is_taxable(),
+			'shipping_taxable' => $product->is_shipping_taxable(),
+			'title' => $product->get_title(),
+			'managing_stock' => $product->managing_stock(),
+			'in_stock' => $product->is_in_stock(),
+			'backorders_allowed' => $product->backorders_allowed(),
+			'backorders_require_notification' => $product->backorders_require_notification(),
+			'on_backorder' => $product->is_on_backorder(),
+			'featured' => $product->is_featured(),
+			'visible' => $product->is_visible(),
+			'on_sale' => $product->is_on_sale(),
+			'purchasable' => $product->is_purchasable(),
+			'sale_price' => $product->get_sale_price(),
+			'regular_price' => $product->get_regular_price(),
+			'price' => $product->get_price(),
+			'tax_class' => $product->get_tax_class(),
+			'tax_status' => $product->get_tax_status(),
+			'shipping_class' => $product->get_shipping_class(),
+			'has_dimensions' => $product->has_dimensions(),
+			'length' => $product->get_length(),
+			'width' => $product->get_width(),
+			'height' => $product->get_height(),
+			'weight' => $product->get_weight(),
+			'has_weight' => $product->has_weight(),
+			'post_content' => $product->post->post_content
+		);
+	}
+	public function get_product_object($product) {
+		$p = new Product();
+		$p->productnr = $product->get_sku();
+	  $p->name = $product->get_title();
+		$p->product_number = $product->get_sku(); // WTF???
+
+	  $p->detail = $product->post->post_content;
+	  $p->stock_management = $product->managing_stock();
+	  $p->totalquantity = $product->get_stock_quantity();
+	  $p->quantity_type = 'db';
+	 	$p->price_slab = $product->get_price();
+	  $p->tax = '???';
+	  $p->foreign_id = $product->id;
+	  $p->link = $product->get_permalink();
+	  $p->visible = $product->is_visible();
+	  $p->on_sale = $product->is_on_sale();
+	  $p->price_sale = $product->get_sale_price();
+	  $p->has_dimensions = $product->has_dimensions();
+	  $p->dimension_unit = '???';
+	  $p->length = $product->get_length();
+	  $p->width = $product->get_width();
+	  $p->height = $product->get_height();
+	  $p->has_weight = $product->has_weight();
+	  $p->weight_unit = '???';
+	  $p->weight = $product->get_weight();
+		$p->currency = '???';
+
+		return $p;
+	}
+
+	public function export_all_product_to_szamlahegy() {
+    $args = array( 'post_type' => 'product');
+    $loop = new WP_Query( $args );
+
+		echo "<pre>";
+		$i = 0;
+		$products = array();
+
+    while ( $loop->have_posts() ) {
+			$loop->the_post();
+    	global $product;
+
+			$products[] = $this->get_product_object($product);
+			if ( $i++ > 10 ) {
+				break;
+			}
+    }
+
+		$szamlahegyApi = new SzamlahegyApi();
+		$api_server = Szamlahegy_Woocommerce::get_server_url();
+		$szamlahegyApi->openHTTPConnection('import_products', $api_server);
+		$response = $szamlahegyApi->import_products($products, Szamlahegy_Woocommerce::get_api_key());
+		$szamlahegyApi->closeHTTPConnection();
+		var_dump($response);
+
+    wp_reset_query();
+		echo "</pre>";
+	}
+
+	public function create_invoice() {
 		check_ajax_referer( 'wc_create_invoice', 'nonce' );
 		$order_id =  intval($_POST['order']);
 		if ( !$order_id ) wp_send_json_error( array('error' => true, 'error_text' => __( 'Hibás order azonosító!', 'szamlahegy-wc' )));
@@ -192,6 +291,20 @@ class Szamlahegy_Woocommerce_Admin {
 			ob_end_clean();
 
 			wp_send_json_success($response);
+		}
+	}
+
+	public function szamlahegy_plugin_menu() {
+		add_management_page(__('Számlahegy eszközök'), __('Számlahegy'), 'read', 'szamlahegy-management', array( $this, 'szamlahegy_management_screen'));
+	}
+
+	public function szamlahegy_management_screen() {
+		if (!current_user_can('manage_options'))  {
+			wp_die( __('You do not have sufficient permissions to access this page.') );
+		}
+		include plugin_dir_path(  __FILE__ )  . 'partials/szamlahegy-woocommerce-admin-management.php';
+		if ($_GET['func'] == 'import') {
+			$this->export_all_product_to_szamlahegy();
 		}
 	}
 }
