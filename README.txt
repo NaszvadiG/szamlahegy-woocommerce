@@ -4,7 +4,7 @@ Donate link:
 Tags: számlázás, számlahegy, szamlahegy, woocommerce, számla, szamla, számlázz, szamlazz, nav, ingyenes, e-számla, e-szamla, elektronikus számla, billing, billing software, e-bill, szamlahegy.hu,
 Requires at least: 4.5
 Tested up to: 4.6
-Stable tag: 3.0.1
+Stable tag: 1.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -58,7 +58,7 @@ Segítségért látogatsd meg a [help.szamlahegy.hu](https://help.szamlahegy.hu)
 4. Sikeres kézi számlakészítés
 
 == Changelog ==
-= 1.1.0 =
+= 1.1.1 =
 * Szállítási díj megjelenítése a számlán ha van
 * JSON hibakezelés hibás kommunikáció esetén
 * Verziószám beállítás
