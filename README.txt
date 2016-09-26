@@ -1,10 +1,10 @@
 === Számlahegy WooCommerce ===
 Contributors: Számlahegy
 Donate link:
-Tags: számlázás, számlahegy, woocommerce, számla, nav, ingyenes, e-számla, elektronikus számla, billing, billing software,
+Tags: számlázás, számlahegy, szamlahegy, woocommerce, számla, szamla, számlázz, szamlazz, nav, ingyenes, e-számla, e-szamla, elektronikus számla, billing, billing software, e-bill, szamlahegy.hu,
 Requires at least: 4.5
-Tested up to: 4.5
-Stable tag: 4.5
+Tested up to: 4.6
+Stable tag: 4.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,7 +12,7 @@ A Számlahegy online számlázó program plugin-je Wordpress Woocommerce webáru
 
 == Description ==
 
-Kösd össze WooCommerce webáruházadat a **Számlahegy** online számlázó programmal, és **felejtsd el a számlatömböt!**
+Kösd össze WooCommerce webáruházadat a **[Számlahegy](https://szamlahegy.hu)** online számlázó programmal, számlázz egyszerűen és **felejtsd el a számlatömböt!**
 A Számlahegy WooCommerce bővítmény segítségével automatikusan állíthatsz ki nyomtatott és [e-számlákat](https://szamlahegy.hu) a WooCommerce webáruházadból érkező megrendelésekhez.
 
 Funkciók:
@@ -35,8 +35,9 @@ Néhány egyszerű lépésben automatizálhatod a számlázást weboldaladon:
 
 1. Töltsd le a bővítményt a wordpress.org-ról vagy telepítsd fel a Bővítmények menüpontban, majd kapcsold be
 1. WooCommerce > Beállítások oldal alján keresd a Számlahegy opciókat
-1. Add meg a Számlahegy felületén található API kulcsot, az alapértelmezett termékazonosítót (vagy SZJ számot) és válaszd ki, hogy milyen számlákat szeretnél kiállítani (Nyomtatott / Elektronikus)
+1. Add meg a [Számlahegy](https://szamlahegy.hu) felületén található API kulcsot, az alapértelmezett termékazonosítót (vagy SZJ számot) és válaszd ki, hogy milyen számlákat szeretnél kiállítani (Nyomtatott / Elektronikus)
 1. Mentsd el a beállításokat
+1. Add meg a Számlahegyben a cégadatoknál weboldalad szerverének IP címét (API kliens IP)
 1. Dölj hátra és hagyd, hogy a Számlahegy végezze helyetted a számlák kiállítását :)
 
 == Frequently Asked Questions ==
@@ -47,15 +48,14 @@ A WooCommerce > Beállítások oldal alján keresd a Számlahegy opciókat, majd
 
 = Hogyan kaphatok segítséget, ha elakadtam? =
 
-Segítségért látogatsd meg a [help.szamlahegy.hu](https://help.szamlahegy.hu)-t, ahol a leggyakrabban felmerülő kérdésekre találhatsz választ, illetve keress minket telefonon és chat-en.
+Segítségért látogatsd meg a [help.szamlahegy.hu](https://help.szamlahegy.hu)-t, ahol a leggyakrabban felmerülő kérdésekre találhatsz válaszokat, illetve keress minket telefonon és chat-en.
 
 == Screenshots ==
 
-1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Note that the screenshot is taken from
-the /assets directory or the directory that contains the stable readme.txt (tags or trunk). Screenshots in the /assets
-directory take precedence. For example, `/assets/screenshot-1.png` would win over `/tags/4.3/screenshot-1.png`
-(or jpg, jpeg, gif).
-2. This is the second screen shot
+1. Számlahegy admin felület
+2. Számlahegy beállítások a WooCommerce-ben
+3. Kézi számlakészítés
+4. Sikeres kézi számlakészítés
 
 == Changelog ==
 
