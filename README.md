@@ -13,3 +13,12 @@ A [Számlahegy online számlázó](https://szamlahegy.hu) program plugin-je [Wor
 * Nyomtatott számla készítése
 * Díjbekérő készítése
 * Teszt üzemmód, teszt számlák készítése
+
+## SVN verzióváltás
+
+Át kell írni a verziószámokat itt:
+* svn_sync.sh
+* szamlahegy-woocommerce.php
+* README.txt
+
+Ha ez megvan akkor futhat az svn_sync.sh
