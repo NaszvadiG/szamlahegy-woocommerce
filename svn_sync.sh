@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PLUGIN_VERSION="1.1.2"
+PLUGIN_VERSION="1.1.4"
 API_VERSION="3.0.1"
 
 rm -rf tmp/szamlahegy-woocommerce-git tmp/szamlahegy-woocommerce-svn
