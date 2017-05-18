@@ -146,8 +146,7 @@ class Szamlahegy_Woocommerce_Admin {
 			'title'    => __( 'Alapértelmezett termékazonosító vagy SZJ szám', 'szamlahegy-wc' ),
 			'id'       => 'szamlahegy_wc_default_productnr',
 			'type'     => 'text',
-			'default'  => 'SZJ-11.11.11',
- 			'desc'     => __( 'A számlán kötelező elem a termék ezonosító vagy SZJ szám, amihez a Woocommerce-ben tárolt SKU-t küldjük át. Ha egy termékhez nincs SKU megadva, akkor az itt megadott érték lesz átküldve.', 'szamlahegy-wc' ),
+ 			'desc'     => __( 'A számlán megjeleníthető a termék azonosító (SKU, SZJ, TEÁOR, VTSZ). Ha egy termékhez nincs SKU megadva, akkor az itt megadott érték fog megjelenni a számlán.', 'szamlahegy-wc' ),
 		);
 
 		$settings[] = array(
