@@ -8,10 +8,10 @@
  * @package           Szamlahegy_Woocommerce
  *
  * @wordpress-plugin
- * Plugin Name: Számlahegy Woocommerce
+ * Plugin Name: A Számlahegy Woocommerce bővítménye
  * Plugin URI:  https://szamlahegy.hu
  * Description: Woocommerce összekapcsolása Számlaheggyel
- * Version:     1.2.3
+ * Version:     1.2.4
  * Author:      Számlahegy Kft
  * Author URI:  https://github.com/Szamlahegy
  */
