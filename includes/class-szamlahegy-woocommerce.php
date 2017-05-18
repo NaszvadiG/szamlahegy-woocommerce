@@ -253,8 +253,19 @@ class Szamlahegy_Woocommerce {
 		return get_option('szamlahegy_wc_generate_auto') == 'yes';
 	}
 
+	public static function woocommerce_version_check( $version = '3.0' ) {
+		if ( class_exists( 'WooCommerce' ) ) {
+			global $woocommerce;
+			if ( version_compare( $woocommerce->version, $version, ">=" ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public static function create_invoice($order_id) {
 		$order = WC_Order_Factory::get_order($order_id);
+
 		if ($order->order_total == 0) return array('error' => true, 'error_text' => __( 'A számla végösszege nulla, azért nem készítem el.', 'szamlahegy-wc' ));
 
 		$order_items = $order->get_items();
@@ -292,15 +303,43 @@ class Szamlahegy_Woocommerce {
 		$invoice->foreign_id = "wc". $order->get_order_number();
 		$invoice->customer_contact_name = $order->billing_first_name . ' ' . $order->billing_last_name;
 
+		$lang = '';
+		#if (is_plugin_active( 'woocommerce-qtranslate-x/woocommerce-qtranslate-x.php' )) {
+		#	$lang = get_post_meta( $order_id, '_user_language', true);
+		#	if ($lang === '' || $lang == nil) {
+		#		$lang = $GLOBALS['q_config']['language'];
+		#	}
+		#}
+
+		if ($lang === '' || $lang == nil) $lang = $order->billing_country;
+		$lang = strtolower($lang);
+		$langs = array("hu", "en", "de", "fr");
+		if (in_array($lang, $langs)) {
+			$invoice->language = $lang;
+		} else {
+			$invoice->language = 'en';
+		}
+
+		$invoice->currency = $order->get_order_currency();
+
 		$invoice_items = array();
 		foreach( $order_items as $item ) {
 			$product_id = $item['product_id'];
-			if ($item['variation_id']) $product_id = $item['variation_id'];
-			$product = new WC_Product($product_id);
+			if ($item['variation_id']) {
+				$product_id = $item['variation_id'];
+				if (Szamlahegy_Woocommerce::woocommerce_version_check('3.0')) {
+					$product = new WC_Product_Variation($product_id);
+				} else {
+					$product = new WC_Product($product_id);
+				}
+			} else {
+				$product = new WC_Product($product_id);
+			}
 
 			$invoice_items[] = array(
 				'productnr' => $product->get_sku() == null ? Szamlahegy_Woocommerce::get_default_productnr() : $product->get_sku(),
-				'name' => $item["name"],
+				// TODO Ezt Rails-ben kellene megoldani (issue 337)
+				'name' => str_replace('&ndash;', '', __($item["name"])),
 				'detail' => wc_get_formatted_variation( $product->variation_data, true ),
 				'quantity' => $item["qty"],
 				'quantity_type' => 'db',
@@ -312,7 +351,6 @@ class Szamlahegy_Woocommerce {
 		// Shipping
 		if ($order->get_total_shipping() != 0) {
 			$invoice_items[] = array(
-				'productnr' => Szamlahegy_Woocommerce::get_default_productnr(),
 				'name' => __( 'Szállítási díj', 'szamlahegy-wc' ),
 				'quantity' => 1,
 				'quantity_type' => 'db',
@@ -322,7 +360,6 @@ class Szamlahegy_Woocommerce {
 		}
 
 		$invoice->invoice_rows_attributes = $invoice_items;
-
 		$szamlahegyApi = new SzamlahegyApi();
 		$api_server = Szamlahegy_Woocommerce::get_server_url();
 
