@@ -102,7 +102,7 @@ class Szamlahegy_Woocommerce_Admin {
 	 	);
 	}
 
-		public function szamlahegy_woocommerce_settings( $settings ) {
+	public function szamlahegy_woocommerce_settings( $settings ) {
 		$settings[] = array(
 			'type' => 'title',
 			'title' => __( 'Számlahegy.hu beállítások', 'szamlahegy-wc' ),

@@ -25,7 +25,7 @@
   <?php else: ?>
     <a class="button save_order button-primary" id="szamlahegy_wc_create" href="#" data-nonce="<?php echo wp_create_nonce( "wc_create_invoice" ); ?>" data-order="<?php echo $post->ID; ?>"><?php _e('Számlakészítés','szamlahegy-wc'); ?></a><br/>
 
-  <? endif; ?>
+  <?php endif; ?>
 <?php endif; ?>
 <a href="https://szamlahegy.hu" alt="<?php _e('Számlahegy online számlázó program','szamlahegy-wc'); ?>" target="_blank"><?php _e('Számlahegy.hu','szamlahegy-wc'); ?></a><br/>
 </center>
