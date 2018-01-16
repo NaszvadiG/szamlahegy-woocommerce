@@ -4,7 +4,7 @@ Donate link:
 Tags: számlázás, számlahegy, szamlahegy, woocommerce, számla, szamla, számlázz, szamlazz, nav, ingyenes, e-számla, e-szamla, elektronikus számla, billing, billing software, e-bill, szamlahegy.hu,
 Requires at least: 4.5
 Tested up to: 4.9.1
-Stable tag: 1.2.7
+Stable tag: 1.2.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
